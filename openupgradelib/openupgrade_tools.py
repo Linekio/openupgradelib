@@ -29,8 +29,10 @@ from lxml.html import fromstring
 
 def table_exists(cr, table):
     """ Check whether a certain table or view exists """
-    cr.execute('SELECT 1 FROM pg_class WHERE relname = %s', (table,))
-    return cr.fetchone()
+    cr.execute('SELECT relname FROM pg_class WHERE relname = %s', (table,))
+    # Check name because postgresl truncate identifiers longer than NAMEDATALEN-1
+    return cr.fetchone() == (table,)
+
 
 
 def column_exists(cr, table, column):
